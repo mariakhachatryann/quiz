@@ -3,10 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
-import "./assets/tailwind.css"
-
-// import BaseSpinner from "@/components/ui/BaseSpinner.vue";
-// import BaseDialog from "@/components/ui/BaseDialog.vue";
+import "./assets/tailwind.css";
 
 const BaseDialog = defineAsyncComponent(() => import("@/components/ui/BaseDialog.vue"))
 const BaseSpinner = defineAsyncComponent(() => import("@/components/ui/BaseSpinner.vue"))

@@ -4,7 +4,8 @@ import MainPage from "@/views/MainPage.vue";
 import SelectOptions from "@/views/SelectOptions.vue";
 import QuestionsPage from "@/views/QuestionsPage.vue";
 import ScoresPage from "@/views/ScoresPage.vue";
-import RegisterForm from "@/components/RegisterBlock.vue";
+import RegisterForm from "@/views/RegisterBlock.vue";
+import RightAnswers from "@/views/RightAnswers.vue";
 import NotFound from "@/views/NotFound.vue";
 
 const routes = [
@@ -13,6 +14,7 @@ const routes = [
     { path: "/options", component: SelectOptions },
     { path: "/questions", component: QuestionsPage },
     { path: "/scores", component: ScoresPage },
+    { path: "/answers", component: RightAnswers },
     { path: "/:notFound(.*)", component: NotFound }
 ]
 

@@ -56,5 +56,8 @@ export default {
             questQnt: 10,
             duration: ""
 		}
+    },
+    removeQuestions(state) {
+        state.questions = []
     }
 }

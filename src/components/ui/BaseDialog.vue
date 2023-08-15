@@ -114,6 +114,14 @@ section {
     padding: 1rem;
 }
 
+.yes-btn {
+    padding: 2px;
+}
+
+.no-btn {
+    padding: 2px;
+}
+
 menu {
     padding: 1rem;
     display: flex;
@@ -123,13 +131,12 @@ menu {
 
 button {
     width: 100px;
-    height: 20px;
-    font-size: 16px;
+    height: 21x;
     border-radius: 6px;
 	border: none;
 	cursor: pointer;
 	background-color: #2c3e50;
-    color: aliceblue;
+    color: #a8e2ee;
     margin-right: 7px;
 }
 

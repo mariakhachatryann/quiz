@@ -1,8 +1,8 @@
 <template>
-    <div class="option-block">
-        <h2 class="option-block-title">Select the topic</h2>
-        <div class="options">
-            <select name="" id="" class="option-select" v-model="topic">
+    <div class="mt-[25px]">
+        <p class="text-[33px]">Select the topic</p>
+        <div class="flex justify-center items-center ">
+            <select class="text-cyanCust-100 px-[24px] py-[7px] rounded-md cursor-pointer bg-cyanCust-200 text-[17px] mt-[15px] outline-none" name="" id="" v-model="topic">
                 <option disabled value="">Please select one</option>
                 <option v-for="(option, index) in topicOptions" :key="index" :value="option">{{ option.label }}</option>
             </select>

@@ -1,17 +1,23 @@
 <template>
-    <div class="scores-block">
-        <p v-if="!showRight && !showFalse">----------</p>
-        <p v-if="showRight"> + 1 </p>
-        <p v-if="showFalse"> - 1 </p>
+    <div @click="leaveGameText = true" class="absolute top-5 left-5 text-3xl cursor-pointer">
+        <i class="fa-solid fa-hand-point-left"></i>
+    </div>
+    <base-dialog :show="leaveGameText" type="out" title="Confirmation" @yes="yes" @no="no">
+        <p>Are you sure you want to leave current game ?</p>
+    </base-dialog>
+    <div class="inline-block mt-[60px]">
+        <p class="text-3xl" v-if="!showRight && !showFalse">----------</p>
+        <p class="text-3xl" v-if="showRight"> + 1 </p>
+        <p class="text-3xl" v-if="showFalse"> - 1 </p>
     </div>
     <base-spinner v-if="showSpinner"></base-spinner>
-    <div class="quest-block" v-else-if="time && (!showRight || !showFalse)">
-        <p class="quest-topic">{{ options.topic.label }}</p>
-        <p class="quest-qnt">Question {{ questionState + 1 }} / {{ options.questQnt }}</p>
-        <p class="quest-contdown">{{ time }}</p>
-        <p class="main-quest" v-html="questions[questionState].question"></p>
-        <div class="answers-block">
-            <button @click="countScores(opt)" v-for="opt in questions[questionState].options" :key="opt" v-html="opt.option"></button>
+    <div class="inline-block mt-[60px] bg-cyanCust-100 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,.26)] p-4 w-full" v-else-if="time && (!showRight || !showFalse)">
+        <p class="text-4xl">{{ options.topic.label }}</p>
+        <p class="text-[33px] m-1.5 mb-4">Question {{ questionState + 1 }} / {{ options.questQnt }}</p>
+        <p class="text-[25px]">{{ time }}</p>
+        <p class="text-[25px] mt-[17px]" v-html="questions[questionState].question"></p>
+        <div class="flex justify-center items-center flex-col mt-[23px]">
+            <button class="w-[270px] h-[30px] items-center rounded-md m-2 text-lg cursor-pointer bg-cyanCust-200 text-cyanCust-100  hover:text-cyanCust-200 hover:bg-cyanCust-100 hover:duration-300" @click="countScores(opt)" v-for="opt in questions[questionState].options" :key="opt" v-html="opt.option"></button>
         </div>
     </div>
 </template>
@@ -26,7 +32,8 @@ export default {
             questionEndTime: null,
             intervalId: null,
             showRight: false,
-            showFalse: false
+            showFalse: false,
+            leaveGameText: false
         };
     },
     async beforeMount() {
@@ -71,21 +78,23 @@ export default {
             }
             
             this.manageTime();
-            
             this.intervalId = setInterval(this.manageTime, 1000);
         },
         manageTime() {
             if (!this.questionEndTime) return;
             
-            const currentTime = new Date();
-            const timeDiff = this.questionEndTime - currentTime;
-            
-            if ( timeDiff <= 0) {
-                this.countScores({isRight: false})
-            } else {
-                const remainingMinutes = Math.floor(timeDiff / 1000 / 60) % 60;
-                const remainingSeconds = Math.floor(timeDiff / 1000) % 60;
-                this.time = `${remainingMinutes.toString().padStart(2, "0")} : ${remainingSeconds.toString().padStart(2, "0")}`;
+            if (!this.leaveGameText) {
+                const currentTime = new Date();
+                const timeDiff = this.questionEndTime - currentTime;
+                
+                if ( timeDiff <= 0) {
+                    this.countScores({isRight: false})
+                } else {
+                    const remainingMinutes = Math.floor(timeDiff / 1000 / 60) % 60;
+                    const remainingSeconds = Math.floor(timeDiff / 1000) % 60;
+
+                    this.time = `${remainingMinutes.toString().padStart(2, "0")} : ${remainingSeconds.toString().padStart(2, "0")}`;
+                }
             }
         },
         countScores(obj) {
@@ -105,103 +114,13 @@ export default {
                     }, 1000);
                     this.changeQuestion()
                 }, 500);
+        },
+        no() {
+            this.leaveGameText = false
+        },
+        yes() {
+            this.$router.replace("/options")
         }
     }
 };
 </script>
-
-<style>
-.scores-block {
-    display: inline-block;
-    margin-top: 90px;
-}
-
-.scores-block p {
-    font-size: 30px;
-}
-
-.quest-block {
-	display: inline-block;
-    margin-top: 60px;
-    background: #76B1BD;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.26);
-    padding: 1rem;
-    width: 100%;
-}
-
-.quest-block .quest-topic {
-    font-size: 35px;
-}
-
-.quest-block .quest-qnt {
-    font-size: 33px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-}
-
-.quest-block .main-quest {
-    font-size: 25px;
-    margin-top: 17px;
-    background: #76B1BD;
-}
-
-.quest-block .answers-block {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 23px;
-}
-
-.quest-block .answers-block.else {
-    flex-direction: row;
-}
-
-.quest-block .answers-block button {
-    width: 270px;
-	height: 30px;
-	border-radius: 6px;
-    margin: 7px;
-	border: none;
-	font-size: 18px;
-	cursor: pointer;
-	background-color: #2c3e50;
-    color: #76B1BD;
-    align-items: center;
-    margin-right: 7px;
-}
-
-.quest-block .answers-block button:hover {
-    background-color: #76B1BD;
-    color: #2c3e50;
-    transition: 0.3s;
-}
-
-.quest-contdown {
-    font-size: 25px;
-}
-
-/* @media screen and (max-width: 390px) {
-	.quest-block {
-		margin-top: 30px;
-	}
-
-    .scores-block {
-        display: inline-block;
-        margin-top: 40px;
-    }
-}
-
-@media screen and (max-width: 450px) {
-	.quest-block {
-		margin-top: 30px;
-	}
-
-    .scores-block {
-        display: inline-block;
-        margin-top: 40px;
-    }
-} */
-
-</style>

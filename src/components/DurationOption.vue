@@ -1,8 +1,8 @@
 <template>
-    <div class="option-block">
-            <h2 class="option-block-title">Duration of each question</h2>
-            <div class="options">
-                <select name="" id="" class="option-select else" v-model="duration">
+    <div class="mt-[25px]">
+            <p class="text-[33px]">Duration of each question</p>
+            <div class="flex justify-center items-center">
+                <select class="text-cyanCust-100 px-[24px] py-[7px] rounded-md cursor-pointer bg-cyanCust-200 text-[17px] mt-[15px] outline-none mb-[55px]" name="" id="" v-model="duration">
                     <option disabled value="">Please select one</option>
                     <option value="0.5">30 seconds</option>
                     <option value="1">1 minute</option>

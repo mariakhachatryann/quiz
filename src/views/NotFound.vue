@@ -1,33 +1,8 @@
 <template>
-    <div class="block">
-        <h2 class="not-found">Page not found.</h2>
-        <p class="not-found-text"> This page could not be found - maybe check out our 
-            <router-link to="/" >Main Page</router-link>
+    <div class="inline-block mt-[270px] bg-cyanCust-100 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,.26)] p-11 w-full">
+        <p class="text-[28px] mb-2.5">Page not found.</p>
+        <p class="text-xl"> This page could not be found - maybe check out our 
+            <router-link to="/" class="text-cyanCust-200 underline">Main Page</router-link>
         </p>
     </div>
 </template>
-
-<style scoped>
-.block {
-    display: inline-block;
-    margin-top: 270px;
-    background: #76B1BD;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.26);
-    padding: 45px;
-    width: 100%;
-}
-
-.block .not-found {
-    font-size: 28px;
-    margin-bottom: 10px;
-}
-
-.block .not-found-text {
-    font-size: 18px;
-}
-
-.block .not-found-text a {
-    color: #2c3e50;
-}
-</style>

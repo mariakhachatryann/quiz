@@ -1,38 +1,46 @@
 <template>
-    <div class="scores-container">
-        <div v-if="!isAuthenticated" class="scores-block">
-            <p class="scores-text">You have earned {{ scores }} scores of {{ questQnt }} questions.</p>
-            <p class="scores-text-smaller">Your results will not be saved unless you are registered....</p>
-            <p class="scores-register-text"> Check out our 
-                <router-link to="/" >Main Page</router-link>
-                to sign up / log in to save your game's data.
-            </p>
-        </div>
-        <div v-else id="table-container">
-            <p class="results-text">Results Board</p>
-            <table>
-                <tr>
-                    <th>Nickname</th>
-                    <th>Scores</th>
+<div class="inline-block h-full w-full">
+    <div class="mt-12 md:mt-64 bg-cyanCust-100 w-full p-5 md:p-10" v-if="!isAuthenticated">
+      <p class="text-xl md:text-2xl mb-2 md:mb-4">You have earned {{ scores }} scores out of {{ questQnt }} questions.</p>
+      <p class="text-base md:text-xl mb-1 md:mb-1.5">Your results will not be saved unless you are registered....</p>
+      <p class="text-sm md:text-base">Check out our
+        <router-link class="underline" to="/">Main Page</router-link>
+        to sign up / log in to save your game's data.
+      </p>
+    </div>
+    <div v-else class="mt-6 md:mt-[90px] inline-block items-center">
+      <p class="mb-6 md:mb-[70px] text-xl md:text-3xl bg-cyanCust-100 rounded-md hover:bg-cyanCust-200 hover:text-cyanCust-100 hover:duration-300">Results Board</p>
+            <table class="border-collapse w-full md:w-[600px] h-[100px] md:h-auto">
+                <tr class="bg-[#a8e2ee] hover:bg-cyanCust-100 duration-300">
+                    <th class="p-2 text-xl py-3 text-center bg-cyanCust-200 text-white">Nickname</th>
+                    <th class="p-2 text-xl py-3 text-center bg-cyanCust-200 text-white">Scores</th>
                 </tr>
-                <tr v-for="user in users" :key="user.nickname">
-                    <td>{{ user.nickname }}</td>
-                    <td>{{ user.scores }}</td>
+                <tr class="bg-[#a8e2ee] hover:bg-cyanCust-100 duration-300" v-for="user in users" :key="user.nickname">
+                    <td class="p-2 text-xl">{{ user.nickname }}</td>
+                    <td class="p-2 text-xl">{{ user.scores }} </td>
                 </tr>
             </table>
-
-            <div class="options-link-container">
-                <p class="options-page-text"> Go to 
-                    <router-link class="router-link" to="/options">Options Page</router-link> 
-                    to play another game...
+            <div class="rounded-md hover:bg-cyanCust-200 hover:text-cyanCust-100 hover:duration-300">
+                <p class="text-base md:text-xl mt-6 md:mt-[50px] bg-cyanCust-100 p-1 rounded-md hover:bg-cyanCust-200 hover:text-cyanCust-100 hover:duration-300">
+                Go to
+                <router-link class="underline hover:bg-cyanCust-200 hover:text-cyanCust-100 hover:duration-300" to="/options">Options Page</router-link>
+                to play another game...
                 </p>
             </div>
+            <router-link to="/answers">
+                <p v-if="questions.length > 2" class="cursor-pointer text-base md:text-xl mt-4 md:mt-[25px] bg-cyanCust-100 p-1 rounded-md hover:bg-cyanCust-200 hover:text-cyanCust-100 hover:duration-300">See Right Answers</p>
+            </router-link>
         </div>
     </div>
 </template>
 
 <script>
 export default {
+    data() {
+        return {
+            showAnswers: false
+        }
+    },
     mounted() {
         if (this.isAuthenticated) {
             this.$store.dispatch("getUsers")
@@ -53,109 +61,15 @@ export default {
         },
         questQnt() {
             return this.$store.getters.gameOptions.questQnt
+        },
+        questions() {
+            return this.$store.getters.questions
         }
     }
 }
 </script>
 
 <style scoped>
-.scores-container {
-    height: 100%;
-}
-
-.scores-block {
-    margin-top: 260px;
-    background: #76B1BD;
-    width: 100%;
-    padding: 40px;
-}
-
-.scores-block .scores-text {
-    font-size: 32px;
-    font-weight: 500;
-    margin-bottom: 19px;
-}
-
-.scores-block .scores-text-smaller {
-    font-size: 23px;
-    margin-bottom: 5px;
-}
-
-.scores-block .scores-register-text {
-    font-size: 23px;
-}
-
-.scores-block .scores-register-text a {
-    color: #2c3e50;
-}
-
-#table-container {
-    display: inline-block;
-    margin-top: 100px;
-    align-items: center;
-}
-
-#table-container .results-text {
-    margin-bottom: 70px;
-    font-size: 30px;
-    background: #76B1BD;
-    border-radius: 6px;
-}
-
-#table-container .results-text:hover {
-	background-color: #2c3e50;
-    color: #76B1BD;
-    transition: 0.3s;
-    overflow-x: auto; 
-}
-
-#table-container table {
-    border-collapse: collapse;
-    width: 600px;
-    height: 100px;
-}
-
-#table-container td, #table-container th {
-    padding: 8px;
-    font-size: 20px;
-}
-
-#table-container tr {
-    background: #a8e2ee;
-}
-
-#table-container tr:hover { 
-    background-color: #76B1BD;
-    transition: 0.3s;
-}
-
-#table-container th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: center;
-    background-color: #2c3e50;
-    color: white;
-}
-
-.options-page-text {
-    font-size: 25px;
-    margin-top: 50px;
-    background: #76B1BD;
-    padding: 8px;
-    border-radius: 6px;
-}
-
-.options-link-container:hover .options-page-text,
-.options-link-container:hover .router-link {
-    background-color: #2c3e50;
-    color: #76B1BD;
-    transition: 0.3s;
-    overflow-x: auto;
-}
-
-.options-page-text a {
-    color: #2c3e50;
-}
 
 @media screen and (max-width: 480px) {
     .results-text {

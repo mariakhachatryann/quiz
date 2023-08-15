@@ -5,7 +5,14 @@ module.exports = {
     "./src/app.vue",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        cyanCust: {
+          100: "#76B1BD",
+          200: "#2c3e50"
+        }
+      }
+    },
   },
   plugins: [],
 }

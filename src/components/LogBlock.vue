@@ -1,5 +1,5 @@
 <template>
-    <div class="close-btn" @click="close">
+    <div class="absolute top-3 right-[22px] w-[27px] cursor-pointer text-[22px] text-cyanCust-100 rounded-md hover:bg-cyanCust-100 hover:text-cyanCust-200 hover:duration-300" @click="close">
         <i class="fa-solid fa-xmark fa-lg"></i>
     </div>
     <base-dialog :show="!!error" title="An error occured" @close="handleError">
@@ -7,16 +7,16 @@
     </base-dialog>
     <base-spinner v-if="isLoading"></base-spinner>
     <form @submit.prevent="submitForm" v-else>
-        <div class="form-control">
-            <label for="email">E-Mail</label>
-            <input class="text-[#2c3e50]" type="email" id="email" v-model.trim="email" />
+        <div class="my-6">
+            <label class="block font-bold text-[22px] mb-2" for="email">E-Mail</label>
+            <input class="w-[300px] border border-solid border-cyanCust-200 bg-cyanCust-100 text-[17px] text-[#2c3e50] focus:bg-[#a9cfd6] focus:outline-none focus:border-cyanCust-200" type="email" id="email" v-model.trim="email" />
         </div>
-        <div class="form-control">
-            <label for="pass">Password</label>
-            <input class="text-[#2c3e50]" type="password" id="pass" v-model.trim="password"/>
+        <div class="my-6">
+            <label class="block font-bold text-[22px] mb-2" for="pass">Password</label>
+            <input class="w-[300px] border border-solid border-cyanCust-200 bg-cyanCust-100 text-[17px] text-[#2c3e50] focus:bg-[#a9cfd6] focus:outline-none focus:border-cyanCust-200" type="password" id="pass" v-model.trim="password"/>
         </div>
         <p v-if="!formIsValid">Please enter a valid email and password (must be at least 6 charachters long).</p>
-        <button class="sign-btn">Log In</button>
+        <button class="w-[140px] h-[35px] rounded-md border-none mt-[15px] text-[18px] cursor-pointer bg-cyanCust-200 text-cyanCust-100 hover:bg-cyanCust-100 hover:text-cyanCust-200 hover:duration-300">Log In</button>
 	</form>
 </template>
 
@@ -70,22 +70,3 @@ export default {
 }
 </script>
 
-<style>
-.close-btn {
-    position: absolute;
-    top: 12px;
-    right: 22px;
-    cursor: pointer;
-    font-size: 22px;
-    color: #76B1BD;
-    border-radius: 6px;
-    width: 27px;
-}
-
-.close-btn:hover {
-    background-color: #76B1BD;
-    color: #2c3e50;
-    transition: 0.3s;
-}
-
-</style>
