@@ -26,6 +26,7 @@
 @media screen and (max-width: 390px) {
 	#app {
 		height: 107vh;
+		overflow-y: hidden;
 	}
 }
 
@@ -33,4 +34,20 @@
 	#app {
 		height: 200vh;
 	}
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #ffe8e8;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #76B1BD;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #6d9fa9;
 }

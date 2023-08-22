@@ -1,12 +1,7 @@
+import questions from "@/data.js";
 export default {
-    async getQuestions(context) {
-        try {
-            const response = await fetch(`http://localhost:3000/questions`);
-            const responseData = await response.json();
-            context.commit("getQuestions", responseData);      
-        } catch (err) {
-            console.error("Something went wrong")
-        }
+    async getQuestions(context) {        
+        context.commit("getQuestions", questions);
     },
     async register(context, payload) {
         const response = await fetch(payload.url, {

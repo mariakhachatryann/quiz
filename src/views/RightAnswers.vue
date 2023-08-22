@@ -11,12 +11,13 @@
     </div>    
 </template>
 
-<script>
-export default {
-    computed: {
-        questions() {
-            return this.$store.getters.questions
-        }
-    }
-}
+<script setup>
+import { computed } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore();
+
+const questions = computed(() => {
+    return store.getters.questions
+})
 </script>

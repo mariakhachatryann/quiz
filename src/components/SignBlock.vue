@@ -12,79 +12,86 @@
     <form @submit.prevent="submitForm" v-else>
         <div class="my-6">
             <label class="block font-bold text-[22px] mb-2" for="nickname">Nickname</label>
-            <input class="w-[300px] border border-solid border-cyanCust-200 bg-cyanCust-100 text-[17px] text-[#2c3e50] focus:bg-[#a9cfd6] focus:outline-none focus:border-cyanCust-200" type="text" id="nickname" v-model.trim="nickname" />
+            <input class="w-[300px] border border-solid border-cyanCust-200 bg-cyanCust-100 text-[17px] text-[#2c3e50] focus:bg-[#a9cfd6] focus:outline-none focus:border-cyanCust-200" type="text" id="nickname" v-model.trim="user.nickname" />
         </div>
         <div class="my-6">
             <label class="block font-bold text-[22px] mb-2" for="email">E-Mail</label>
-            <input class="w-[300px] border border-solid border-cyanCust-200 bg-cyanCust-100 text-[17px] text-[#2c3e50] focus:bg-[#a9cfd6] focus:outline-none focus:border-cyanCust-200" type="email" id="email" v-model.trim="email" />
+            <input class="w-[300px] border border-solid border-cyanCust-200 bg-cyanCust-100 text-[17px] text-[#2c3e50] focus:bg-[#a9cfd6] focus:outline-none focus:border-cyanCust-200" type="email" id="email" v-model.trim="user.email" />
         </div>
         <div class="my-6">
             <label class="block font-bold text-[22px] mb-2" for="pass">Password</label>
-            <input class="w-[300px] border border-solid border-cyanCust-200 bg-cyanCust-100 text-[17px] text-[#2c3e50] focus:bg-[#a9cfd6] focus:outline-none focus:border-cyanCust-200" type="password" id="pass" v-model.trim="password" />
+            <input class="w-[300px] border border-solid border-cyanCust-200 bg-cyanCust-100 text-[17px] text-[#2c3e50] focus:bg-[#a9cfd6] focus:outline-none focus:border-cyanCust-200" type="password" id="pass" v-model.trim="user.password" />
         </div>
         <p v-if="!formIsValid">All options are required to be selected (password must be at least 6 charachters).</p>
         <button class="w-[140px] h-[35px] rounded-md border-none mt-[15px] text-[18px] cursor-pointer bg-cyanCust-200 text-cyanCust-100 hover:bg-cyanCust-100 hover:text-cyanCust-200 hover:duration-300">Sign Up</button>
 	</form>
 </template>
 
-<script>
-import BaseDialog from './ui/BaseDialog.vue';
-export default {
-  components: { BaseDialog },
-    data() {
-        return {
-            nickname: "",
-            email: "",
-            password: "",
-            formIsValid: true,
-            isLoading: false,
-            isSignedUp: false,
-            error: null
-        }
-    },
-    methods: {
-        async submitForm() {
-            this.formIsValid = true;
-            if (this.nickname.val === "" || this.email === "" || !this.email.includes("@") || this.password.length < 6 ) {
-                this.formIsValid = false;
-            } else {
-                this.isLoading = true
-                try {
-                    await this.$store.dispatch("register", {
-                        url: "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA4vf3e5B-Xgo_1LMmQcv-in_nCbsCENCY",
-                        nickname: this.nickname,
-                        email: this.email,
-                        password: this.password
-                    })
+<script setup>
+import { reactive, ref } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router"
 
-                    this.$store.dispatch("addUser", {
-                        nickname: this.nickname,
-                        email: this.email,
-                        scores: 0
-                    })
+const store = useStore();
+const router = useRouter();
 
-                    this.isSignedUp = true
-                } catch (err) {
-                    this.error = err.message || "Failed to authenticate, try later."
-                }
-                this.isLoading = false
-                this.nickname = ""
-                this.email = ""
-                this.password = ""   
-                
-        console.log(this.$store.getters.currentUser);
-                
-            }
-        },
-        close() {
-            this.$router.replace("/")
-        },
-        closeMessage() {
-            this.isSignedUp = false
-        },
-        handleError() {
-            this.error = null;
+const user = reactive({
+    nickname: "",
+    email: "",
+    password: ""
+})
+
+const formIsValid = ref(true);
+const isLoading = ref(false);
+const isSignedUp = ref(false);
+const error = ref(null);
+
+const submitForm = async () => {
+    formIsValid.value = true;
+    if (user.nickname === "" || user.email === "" || !user.email.includes("@") || user.password.length < 6 ) {
+         console.log(user.password.length);
+         console.log(user.password);
+        formIsValid.value = false;
+    } else {
+        isLoading.value = true
+        try {
+            await store.dispatch("register", {
+                url: "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA4vf3e5B-Xgo_1LMmQcv-in_nCbsCENCY",
+                nickname: user.nickname,
+                email: user.email,
+                password: user.password
+            })
+
+            store.dispatch("addUser", {
+                nickname: user.nickname,
+                email: user.email,
+                scores: 0
+            })
+
+            isSignedUp.value = true
+        } catch (err) {
+            error.value = err.message || "Failed to authenticate, try later."
         }
+
+        isLoading.value = false
+        user.nickname = ""
+        user.email = ""
+        user.password = ""   
+        
+        console.log(store.getters.currentUser);
+        
     }
+}
+
+const close = () => {
+    router.replace("/")
+}
+
+const closeMessage = () => {
+    isSignedUp.value = false
+}
+
+const handleError = () => {
+    error.value = null
 }
 </script>

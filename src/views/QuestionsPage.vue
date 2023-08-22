@@ -1,8 +1,8 @@
 <template>
-    <div @click="leaveGameText = true" class="absolute top-5 left-5 text-3xl cursor-pointer">
+    <div @click="showLeaveGameText" class="absolute top-5 left-5 text-3xl cursor-pointer">
         <i class="fa-solid fa-hand-point-left"></i>
     </div>
-    <base-dialog :show="leaveGameText" type="out" title="Confirmation" @yes="yes" @no="no">
+    <base-dialog :show="leaveGameText" type="out" title="Confirmation" @yes="leaveGame" @no="notLeave">
         <p>Are you sure you want to leave current game ?</p>
     </base-dialog>
     <div class="inline-block mt-[60px]">
@@ -22,105 +22,110 @@
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            showSpinner: true,
-            questionState: -1,
-            time: "",
-            questionEndTime: null,
-            intervalId: null,
-            showRight: false,
-            showFalse: false,
-            leaveGameText: false
-        };
-    },
-    async beforeMount() {
-        await this.$store.dispatch("getQuestions");
-        this.showSpinner = false;
-        this.changeQuestion();
-    },
-    beforeDestroy() {
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
-        }
-    },
-    computed: {
-        questions() {
-            return this.$store.getters.questions;
-        },
-        options() {
-            return this.$store.getters.gameOptions;
-        },
-        isAuthenticated() {
-            return this.$store.getters.isAuthenticated
-        }
-    },
-    methods: {
-        changeQuestion() {
-            if (this.intervalId) {
-                clearInterval(this.intervalId);
-            }
+<script setup>
+import { ref, onBeforeMount, onBeforeUnmount, computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
-            if ((this.questionState + 2) > this.options.questQnt) {
-                this.$router.replace("/scores")
-                return;
-            } else {
-                this.questionState++;
-            }
+const store = useStore();
+const router = useRouter();
 
-            switch (this.options.duration) {
-                case "1": this.questionEndTime = new Date(new Date().getTime() + 1.01 * 60 * 1000); break;
-                case "1.5": this.questionEndTime = new Date(new Date().getTime() + 1.501 * 60 * 1000); break;
-                case "2": this.questionEndTime = new Date(new Date().getTime() + 2.01 * 60 * 1000); break;
-                case "0.5": this.questionEndTime = new Date(new Date().getTime() + 30.5 * 1000); break;
-            }
+let showSpinner = ref(true);
+let questionState = ref(-1);
+let time = ref("");
+let questionEndTime = ref(null);
+let intervalId = ref(null);
+let showRight = ref(false);
+let showFalse = ref(false);
+let leaveGameText = ref(false);
+
+onBeforeMount(async () => {
+    await store.dispatch("getQuestions");
+    showSpinner.value = false;
+    changeQuestion()
+})
+
+onBeforeUnmount(() => {
+    if (intervalId.value) {
+        clearInterval(intervalId.value);
+    }
+})
+
+const questions = computed(() => store.getters.questions )
+const options = computed(() => store.getters.gameOptions )
+const isAuthenticated = computed(() => store.getters.isAuthenticated )
+
+const changeQuestion = () => {
+    if (intervalId.value) {
+        clearInterval(intervalId.value);
+    }
+
+    if ((questionState.value + 2) > options.value.questQnt) {
+        router.replace("/scores")
+        return;
+    } else {
+        questionState.value++;
+    }
+
+    switch (options.value.duration) {
+        case "1": questionEndTime.value = new Date(new Date().getTime() + 1.01 * 60 * 1000); break;
+        case "1.5": questionEndTime.value = new Date(new Date().getTime() + 1.501 * 60 * 1000); break;
+        case "2": questionEndTime.value = new Date(new Date().getTime() + 2.01 * 60 * 1000); break;
+        case "0.5": questionEndTime.value = new Date(new Date().getTime() + 30.5 * 1000); break;
+    }
+    
+    manageTime();
+    intervalId.value = setInterval(manageTime, 1000);
+}
+
+const manageTime = () => {
+    if (!questionEndTime.value) return;
             
-            this.manageTime();
-            this.intervalId = setInterval(this.manageTime, 1000);
-        },
-        manageTime() {
-            if (!this.questionEndTime) return;
-            
-            if (!this.leaveGameText) {
-                const currentTime = new Date();
-                const timeDiff = this.questionEndTime - currentTime;
-                
-                if ( timeDiff <= 0) {
-                    this.countScores({isRight: false})
-                } else {
-                    const remainingMinutes = Math.floor(timeDiff / 1000 / 60) % 60;
-                    const remainingSeconds = Math.floor(timeDiff / 1000) % 60;
+    if (!leaveGameText.value) {
+        const currentTime = new Date();
+        const timeDiff = questionEndTime.value - currentTime;
+        
+        if ( timeDiff <= 0) {
+            countScores({isRight: false})
+        } else {
+            const remainingMinutes = Math.floor(timeDiff / 1000 / 60) % 60;
+            const remainingSeconds = Math.floor(timeDiff / 1000) % 60;
 
-                    this.time = `${remainingMinutes.toString().padStart(2, "0")} : ${remainingSeconds.toString().padStart(2, "0")}`;
-                }
-            }
-        },
-        countScores(obj) {
-                if (this.isAuthenticated) {
-                    this.$store.dispatch("manageScores", { operation: obj.isRight ? "add" : "remove" })
-                } else {
-                    if (obj.isRight) {
-                        this.$store.commit("addScores")
-                    }
-                }
-                setTimeout(() => {
-                    this.time = ""
-                    obj.isRight ? this.showRight = true : this.showFalse = true
-                    
-                    setTimeout(() => {
-                        obj.isRight ? this.showRight = false : this.showFalse = false
-                    }, 1000);
-                    this.changeQuestion()
-                }, 500);
-        },
-        no() {
-            this.leaveGameText = false
-        },
-        yes() {
-            this.$router.replace("/options")
+            time.value = `${remainingMinutes.toString().padStart(2, "0")} : ${remainingSeconds.toString().padStart(2, "0")}`;
         }
     }
-};
+}
+
+const countScores = (obj) => {
+    if (isAuthenticated.value) {
+        store.dispatch("manageScores", { operation: obj.isRight ? "add" : "remove" })
+    } else {
+        if (obj.isRight) {
+            store.commit("addScores")
+        }
+    }
+    setTimeout(() => {
+        time.value = ""
+        obj.isRight ? showRight.value = true : showFalse.value = true
+
+        setTimeout(() => {
+            obj.isRight ? showRight.value = false : showFalse.value = false
+        }, 1000);
+
+        changeQuestion()
+    }, 500);
+}
+
+const showLeaveGameText = () => {
+    leaveGameText.value = true
+}
+
+const leaveGame = () => {
+    router.replace("/options")
+}
+
+const notLeave = () => {
+    leaveGameText.value = false
+}
+
 </script>

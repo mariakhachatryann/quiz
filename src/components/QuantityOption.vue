@@ -9,29 +9,25 @@
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            quantity: 10
-        };
-    },
-    methods: {
-        increaseQst() {
-            if (this.quantity < 30) {
-                this.quantity++;
-            }
-        },
-        decreaseQst() {
-            if (this.quantity > 3) {
-                this.quantity--;
-            }
-        },
-    },
-    watch: {
-        quantity(newQuantity) {
-            this.$emit("quantity-updated", newQuantity);
-        }
+<script setup>
+import { ref, watch } from "vue";
+
+const emit = defineEmits()
+const quantity = ref(10);
+
+function increaseQst() {
+    if (quantity.value < 30) {
+        quantity.value++;
     }
-};
+}
+
+function decreaseQst() {
+    if (quantity.value > 3) {
+        quantity.value--;
+    }
+}
+
+watch(quantity, function(newQuantity) {
+    emit("quantity-updated", newQuantity);
+})
 </script>

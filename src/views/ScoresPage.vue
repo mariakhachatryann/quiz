@@ -1,9 +1,9 @@
 <template>
 <div class="inline-block h-full w-full">
     <div class="mt-12 md:mt-64 bg-cyanCust-100 w-full p-5 md:p-10" v-if="!isAuthenticated">
-      <p class="text-xl md:text-2xl mb-2 md:mb-4">You have earned {{ scores }} scores out of {{ questQnt }} questions.</p>
-      <p class="text-base md:text-xl mb-1 md:mb-1.5">Your results will not be saved unless you are registered....</p>
-      <p class="text-sm md:text-base">Check out our
+      <p class="text-2xl md:text-2xl mb-2 md:mb-4">You have earned {{ scores }} scores out of {{ questQnt }} questions.</p>
+      <p class="text-xl mb-1 md:mb-1.5">Your results will not be saved unless you are registered....</p>
+      <p class="text-xl ">Check out our
         <router-link class="underline" to="/">Main Page</router-link>
         to sign up / log in to save your game's data.
       </p>
@@ -34,92 +34,38 @@
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            showAnswers: false
-        }
-    },
-    mounted() {
-        if (this.isAuthenticated) {
-            this.$store.dispatch("getUsers")
-            console.log(this.$store.getters.users);
-        }
-    },
-    computed: {
-        users() {
-            const realUsers = this.$store.getters.users
-            const sortedArr = realUsers.sort((a, b) => b.scores - a.scores);
-            return sortedArr
-        },
-        scores() {
-            return this.$store.getters.scores
-        },
-        isAuthenticated() {
-            return this.$store.getters.isAuthenticated
-        },
-        questQnt() {
-            return this.$store.getters.gameOptions.questQnt
-        },
-        questions() {
-            return this.$store.getters.questions
-        }
+<script setup>
+import { onMounted , computed } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore();
+
+const users = computed(() => {
+    const realUsers = store.getters.users;
+    const sortedUsers = realUsers.sort((a, b) => b.scores - a.scores);
+    return sortedUsers;
+})
+
+const questions = computed(() => {
+    return store.getters.questions;
+})
+
+const scores = computed(() => {
+    return store.getters.scores;
+})
+
+const isAuthenticated = computed(function() {
+    return store.getters.isAuthenticated;
+})
+
+const questQnt = computed(() => {
+    return store.getters.gameOptions.questQnt;
+})
+
+onMounted(() => {
+    if (isAuthenticated) {
+        store.dispatch("getUsers")
+        console.log(store.getters.users);
     }
-}
+})
 </script>
-
-<style scoped>
-
-@media screen and (max-width: 480px) {
-    .results-text {
-        font-size: 20px;
-    }
-
-    #table-container {
-        align-items: center;
-    }
-    
-    #table-container table {
-        border-collapse: collapse;
-        margin-left: 50px;
-        width: 300px;
-        height: 50px;
-    }   
-
-    th, td {
-        font-size: 16px;
-        padding: 6px;
-    }
-}
-
-@media screen and (min-width: 481px) and (max-width: 768px) {
-    .results-text {
-        font-size: 22px;
-    }
-
-    #table-container table {
-        border-collapse: collapse;
-        width: 300px;
-        height: 50px;
-        margin-left: 70px;
-
-    }   
-
-    th, td {
-        font-size: 18px;
-        padding: 8px;
-    }
-}
-
-@media screen and (min-width: 769px) {
-    .results-text {
-        font-size: 26px;
-    }
-
-    th, td {
-        font-size: 20px;
-        padding: 10px;
-    }
-}
-</style>
