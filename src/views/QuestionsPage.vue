@@ -17,7 +17,7 @@
         <p class="text-[25px]">{{ time }}</p>
         <p class="text-[25px] mt-[17px]" v-html="questions[questionState].question"></p>
         <div class="flex justify-center items-center flex-col mt-[23px]">
-            <button class="w-[270px] h-[30px] items-center rounded-md m-2 text-lg cursor-pointer bg-cyanCust-200 text-cyanCust-100  hover:text-cyanCust-200 hover:bg-cyanCust-100 hover:duration-300" @click="countScores(opt)" v-for="opt in questions[questionState].options" :key="opt" v-html="opt.option"></button>
+            <button class="w-[270px] h-[30px] items-center rounded-md m-2 text-lg cursor-pointer bg-cyanCust-200 text-cyanCust-100  md:hover:text-cyanCust-200 md:hover:bg-cyanCust-100 md:hover:duration-300" @click="countScores(opt)" v-for="opt in questions[questionState].options" :key="opt" v-html="opt.option"></button>
         </div>
     </div>
 </template>

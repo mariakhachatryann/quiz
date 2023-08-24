@@ -6,12 +6,12 @@
         <p>All options are required to be selected manually !</p>
     </base-dialog>
     <div class="inline-block absolute left-[35px] top-[15px]">
-        <button class="w-[65px] h-[22px] text-[22px] rounded-md cursor-pointer bg-cyanCust-200 text-cyanCust-100 hover:bg-cyanCust-100 hover:text-cyanCust-200 hover:duration-300 fa-solid fa-arrow-right-from-bracket" v-if="isAuthenticated" @click="showLogoutDialog" ></button>
-        <button class="w-[65px] h-[22px] text-[22px] rounded-md cursor-pointer bg-cyanCust-200 text-cyanCust-100 hover:bg-cyanCust-100 hover:text-cyanCust-200 hover:duration-300  fa-solid fa-solid fa-arrow-left-long" v-else @click="goBack" ></button>
+        <button class="w-[65px] h-[22px] text-[22px] rounded-md cursor-pointer bg-cyanCust-200 text-cyanCust-100 md:hover:bg-cyanCust-100 md:hover:text-cyanCust-200 md:hover:duration-300 fa-solid fa-arrow-right-from-bracket" v-if="isAuthenticated" @click="showLogoutDialog" ></button>
+        <button class="w-[65px] h-[22px] text-[22px] rounded-md cursor-pointer bg-cyanCust-200 text-cyanCust-100 md:hover:bg-cyanCust-100 md:hover:text-cyanCust-200 md:hover:duration-300  fa-solid fa-solid fa-arrow-left-long" v-else @click="goBack" ></button>
     </div>
     <div class="inline-block absolute right-[20px] top-[15px]" v-if="isAuthenticated">
         <router-link to="/scores">
-            <button class="w-[145px] h-[27px] text-lg rounded-md cursor-pointer  bg-cyanCust-200 text-cyanCust-100 hover:bg-cyanCust-100 hover:text-cyanCust-200 hover:duration-300">Scoreboard</button>
+            <button class="w-[145px] h-[27px] text-lg rounded-md cursor-pointer  bg-cyanCust-200 text-cyanCust-100 md:hover:bg-cyanCust-100 md:hover:text-cyanCust-200 md:hover:duration-300">Scoreboard</button>
         </router-link>
     </div>
     <div class="flex flex-col justify-center items-center h-full">

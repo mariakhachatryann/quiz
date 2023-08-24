@@ -6,7 +6,6 @@
         </p>
 		<component :is="comp"></component>
 	</div>
-    
 </template>
 
 <script setup>
